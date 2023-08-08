@@ -33,7 +33,7 @@ Generating random related words for hashtag by using a neural network php librar
 
 *Navigate to `chrome://flags/#unsafely-treat-insecure-origin-as-secure` in Chrome.
 
-*Find and enable the `Insecure origins treated as secure` section (see below).
+*Find and enable the `Insecure origins treated as secure` section.
 
 *Add any addresses you want to ignore the secure origin policy for
 
