@@ -86,16 +86,7 @@ class HashTagAttribute implements DataPatchInterface
     }
 
     /**
-     * Get array of patches that have to be executed prior to this.
-     *
-     * Example of implementation:
-     *
-     * [
-     *      \Vendor_Name\Module_Name\Setup\Patch\Patch1::class,
-     *      \Vendor_Name\Module_Name\Setup\Patch\Patch2::class
-     * ]
-     *
-     * @return string[]
+     * @inheirtDoc
      */
     public static function getDependencies()
     {
@@ -103,9 +94,7 @@ class HashTagAttribute implements DataPatchInterface
     }
 
     /**
-     * Get aliases (previous names) for the patch.
-     *
-     * @return string[]
+     * @inheirtdoc
      */
     public function getAliases()
     {

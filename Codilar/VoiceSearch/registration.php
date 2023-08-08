@@ -16,8 +16,11 @@
  * then your use, modification, or distribution of it
  * requires the prior written permission from Codilar.
  ******************************************************************************/
-\Magento\Framework\Component\ComponentRegistrar::register(
-    \Magento\Framework\Component\ComponentRegistrar::MODULE,
+
+use Magento\Framework\Component\ComponentRegistrar;
+
+ComponentRegistrar::register(
+    ComponentRegistrar::MODULE,
     'Codilar_VoiceSearch',
     __DIR__
 );
