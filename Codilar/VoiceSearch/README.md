@@ -27,5 +27,16 @@ Generating random hashtag based on category, product name, description & saving 
 Generating random related words for hashtag by using a neural network php library
 
 
+## Information
+
+**To Enable the Microphone/Camera in Chrome for (Local) Unsecure Origins**
+
+*Navigate to `chrome://flags/#unsafely-treat-insecure-origin-as-secure` in Chrome.
+
+*Find and enable the `Insecure origins treated as secure` section.
+
+*Add any addresses you want to ignore the secure origin policy for
+
+*Save and restart Chrome.
 
 
