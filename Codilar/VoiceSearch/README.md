@@ -80,6 +80,8 @@ bin/magento cache:clean
 ## Architecture Diagram
 
 * Diagram  provides an illustrative overview of the key steps and decision points within our software's core process. It outlines the journey that data takes as it passes through different stages of our application.
+  * Note: PDF is attached in the module directory
+
 
 
 
