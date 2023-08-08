@@ -22,9 +22,9 @@ Enhanced User Experience: Implementing voice search can enhance the overall user
 API used to generate related words(that works with a neural network that analyzes thousands of wikipedia articles) : https://github.com/quiquelhappy/php-words-relationship
 
 Solution Approach:
-Conversion of speech to text using JS API
-Generating random hashtag based on category, product name, description & saving that in a custom product attribute which is returning us strong search results even if you don’t know the actual product name
-Generating random related words for hashtag by using a neural network php library
+* Conversion of speech to text using JS API
+* Generating random hashtag based on category, product name, description & saving that in a custom product attribute which is returning us strong search results even if you don’t know the actual product name
+* Generating random related words for hashtag by using a neural network php library
 
 
 
@@ -74,13 +74,16 @@ bin/magento cache:clean
 
 **System Configuration Added In Admin To fetch Default Hash Tag Api**
 
-![system-config.png](..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fhome%2Fcodilar%2FPictures%2Fsystem-config.png)
+![systemconfig](https://github.com/shakil-codilar/Codilar_Hackathon/assets/92923442/21d783c0-607c-4522-a38a-7741eb03ef95)
+
 
 ## Architecture Diagram
 
-* Below diagram provides an illustrative overview of the key steps and decision points within our software's core process. It outlines the journey that data takes as it passes through different stages of our application.
+* Diagram  provides an illustrative overview of the key steps and decision points within our software's core process. It outlines the journey that data takes as it passes through different stages of our application.
 
-[Architecture-Diagram.pdf](..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fhome%2Fcodilar%2FDownloads%2FArchitecture-Diagram.pdf)
+
+
+
 
 
 
