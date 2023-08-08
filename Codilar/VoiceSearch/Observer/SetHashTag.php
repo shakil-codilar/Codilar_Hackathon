@@ -24,6 +24,7 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Codilar\VoiceSearch\Logger\Logger;
 use Magento\Framework\Filesystem\Io\File as IoFIle;
 
@@ -32,17 +33,31 @@ class SetHashTag implements ObserverInterface
     /**
      * Quantity of words of Api
      */
-    const RELATED_WORDS_QUANTITY = 1000;
+    const QUANTITY = 1000;
+    /**
+     *  System Config value of hashtag API
+     */
+    const HASH_TAG_SYSTEM_CONFIG_VALUE = 'codilar_voicesearch/general/hashtag';
+    /**
+     *  Hash Api Dynamic Name
+     */
+    const WORD = '$word';
+    /**
+     * Hash APi Dynamic Quanity
+     */
+    const RELATED_WORDS_QUANTITY = 'RELATED_WORDS_QUANTITY';
 
     /**
      * @param CategoryRepositoryInterface $categoryRepository
      * @param IoFIle $ioFile
      * @param Logger $logger
+     * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
         private readonly CategoryRepositoryInterface $categoryRepository,
         private readonly IoFIle $ioFile,
-        private readonly Logger                      $logger
+        private readonly Logger $logger,
+        private readonly ScopeConfigInterface $scopeConfig
     )
     {
     }
@@ -130,8 +145,13 @@ class SetHashTag implements ObserverInterface
     protected function relatedWordsOfCategoryName($word): array
     {
         $wordsArray = [];
+        $hashTagApiUrl = $this->scopeConfig->getValue(self::HASH_TAG_SYSTEM_CONFIG_VALUE);
+        $apiWordsToBeReplaced = [self::WORD, self::RELATED_WORDS_QUANTITY];
+        $apiWords = [$word , self::QUANTITY];
+        $hashTagAPi = str_replace($apiWordsToBeReplaced , $apiWords , $hashTagApiUrl);
+
         // datamuse api json request
-        $request = $this->ioFile->read('https://api.datamuse.com/words?ml=' . $word . '&max=' . self::RELATED_WORDS_QUANTITY);
+        $request = $this->ioFile->read($hashTagAPi);
         if($request) {
             $response = json_decode($request);
 

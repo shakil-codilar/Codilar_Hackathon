@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+/*******************************************************************************
+ * Codilar Hackathon 2023
+ * Team Innovation Squad
+ *
+ * Copyright 2023 Codilar
+ * All Rights Reserved.
+ *
+ * NOTICE: All information contained herein is, and remains
+ * the property of Codilar and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Codilar
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Codilar permits you to use and modify this file with few restriction
+ * If you have received this file from a source other than Codilar,
+ * then your use, modification, or distribution of it
+ * requires the prior written permission from Codilar.
+ ******************************************************************************/
+ -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="codilar_voicesearch" translate="label" type="text" sortOrder="100" showInDefault="1">
+            <label>Voice Search</label>
+            <tab>general</tab>
+            <resource>Vendor_Module::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1">
+                <label>General Configuration</label>
+                <field id="hashtag" type="text" translate="label" sortOrder="10" showInDefault="1" canRestore="1">
+                    <label>Hash Tag Api</label>
+                    <comment>API to get related hash tags of a word.</comment>
+                </field>
+              </group>
+        </section>
+    </system>
+</config>
