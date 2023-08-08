@@ -73,28 +73,15 @@ class HashTagSearch
                 $productCollection = $productCollectionFactory->addAttributeToSelect('hash_tag_attribute');
                 foreach ($productCollection as $product) {
                     $hasTagValue = $product->getCustomAttribute('hash_tag_attribute')?->getValue();
-
                     if ($hasTagValue) {
-                        $shouldReturnProduct = $this->soundAiChecking($queryText, $hasTagValue);
+                        // Remove special characters
+                        $cleanedHashString = preg_replace('/[^a-zA-Z\s]/', '', $hasTagValue);
+                        $shouldReturnProduct = $this->soundAiOccurenceChecking($queryText, $cleanedHashString);
                         if ($shouldReturnProduct === true) {
                             $productNames[] = $this->productRepository->get($product->getSku())->getName();
                         }
                     }
                 }
-
-                if (!$productNames) {
-                    foreach ($productCollection as $product) {
-                        $hasTagValue = $product->getCustomAttribute('hash_tag_attribute')?->getValue();
-                        if ($hasTagValue) {
-
-                            $shouldReturnProduct = $this->soundAiOccurenceChecking($queryText, $hasTagValue);
-                            if ($shouldReturnProduct === true) {
-                                $productNames[] = $this->productRepository->get($product->getSku())->getName();
-                            }
-                        }
-                    }
-                }
-
                 if ($productNames) {
                     foreach ($productNames as $productName) {
                         if (str_word_count($productName) > 1) {
@@ -119,131 +106,88 @@ class HashTagSearch
      * @param $hashTagValue
      * @return bool
      */
-    protected function soundAiChecking($queryText , $hashTagValue): bool
-    {
-        $hasTagStrings = explode(' ', $hashTagValue);
-        // Remove the hash symbol from each hash tag
-        $cleanedProductHashTags[] = array_map(function ($tag) {
-            return str_replace('#', '', trim($tag));
-        }, $hasTagStrings);
-        //for Combined Query Text
-        $combinedQueryText = implode('', preg_replace('/\s+/', '', $queryText));
-        foreach ($cleanedProductHashTags as $cleanedProductHashTag) {
-            foreach ($cleanedProductHashTag as $cleanedHash) {
-                $pattern = "/\b" . preg_quote($combinedQueryText, '/') . "\b/i"; // /i for case-insensitive search
-                if (preg_match($pattern, $cleanedHash)) {
-                    return true;
-                }
-            }
-        }
-
-        //for each string of Query Text
-        foreach ($queryText as $query) {
-            foreach ($cleanedProductHashTags as $cleanedProductHashTag) {
-                foreach ($cleanedProductHashTag as $cleanedHash) {
-                    //removing white spaces from $query
-                    //checking the HashTag contains the query
-                    // Use regular expression with word boundaries (\b) to match the whole word
-                    $pattern = "/\b" . preg_quote($query, '/') . "\b/i"; // /i for case-insensitive search
-                    if (preg_match($pattern, $cleanedHash)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @param $queryText
-     * @param $hashTagValue
-     * @return bool
-     */
     protected function soundAiOccurenceChecking($queryText , $hashTagValue): bool
     {
-        $hashTagValue = preg_replace('/[^a-zA-Z0-9]+/', ' ', $hashTagValue);
-        $hasTagStrings = explode(' ', $hashTagValue);
-        // Remove the hash symbol from each hash tag
-        $cleanedProductHashTags[] = array_map(function ($tag) {
-            return str_replace('#', '', trim($tag));
-        }, $hasTagStrings);
-        //does not matches any loginc then checking for occurences of Query
+        $showProductStatus = false;
+        $hashTagValue = explode(' ' , $hashTagValue);
         //for each string of Query Text
-        $occurenceCheckingFor = '';
         foreach ($queryText as $query) {
-            foreach ($cleanedProductHashTags as $cleanedProductHashTag) {
-                foreach ($cleanedProductHashTag as $cleanedHash) {
-                    if (strlen($query) > 3) {
+                foreach ($hashTagValue as $hashTag) {
+                    $a = $hashTag;//hash tag val
+                    $b = $query;//mic input
 
-                        $allCharactersExist = true;
-                        $micCharactersCount = [];
-                        $hashCharactersCount = [];
-                        $occurenceCheckingFor = '';
-                        // Count the occurrences of each character in string of mic
-                        for ($i = 0; $i < strlen($query); $i++) {
-                            $char = $query[$i];
-                            if (!isset($micCharactersCount[$char])) {
-                                $micCharactersCount[$char] = 1;
-                            } else {
-                                $micCharactersCount[$char]++;
+                    $micCharactersCount = [];
+                    $hashCharactersCount = [];
+                    $occurenceCheckingFor = '';
+                    $firstCharsOfMic = substr($b, 0, 1);
+                    $firstCharOfHash = substr($a, 0, 1);
+                    $lengthGap = 0;
+                    if(strlen($b) > strlen($a)){
+                        $lengthGap = strlen($b)- strlen($a);
+                    }else{
+                        $lengthGap = strlen($a)-strlen($b);
+                    }
+                    // Count the occurrences of each character in string of mic
+                    if (strtolower($firstCharsOfMic) == strtolower($firstCharOfHash)) {
+                        if( $lengthGap < 4 &&  strlen($b) > 2 && strlen($a) > 1){
+                            for ($i = 0; $i < strlen($b); $i++) {
+                                $char = $b[$i];
+                                if (!isset($micCharactersCount[$char])) {
+                                    $micCharactersCount[$char] = 1;
+                                } else {
+                                    $micCharactersCount[$char]++;
+                                }
                             }
-                        }
 
-                        // Count the occurrences of each character in string hash
-                        for ($i = 0; $i < strlen($cleanedHash); $i++) {
-                            $char = $cleanedHash[$i];
-                            if (!isset($hashCharactersCount[$char])) {
-                                $hashCharactersCount[$char] = 1;
-                            } else {
-                                $hashCharactersCount[$char]++;
+                            // Count the occurrences of each character in string hash
+                            for ($i = 0; $i < strlen($a); $i++) {
+                                $char = $a[$i];
+                                if (!isset($hashCharactersCount[$char])) {
+                                    $hashCharactersCount[$char] = 1;
+                                } else {
+                                    $hashCharactersCount[$char]++;
+                                }
                             }
-                        }
 
-                        if(count($micCharactersCount) > count($hashCharactersCount)){
-                            $occurenceCheckingFor = 'mic';
                             foreach($micCharactersCount as $mickey => $miccharacter){
                                 foreach($hashCharactersCount as $hashkey => $hashcharacter){
-                                    if($micCharactersCount[$mickey]){
-                                        if($hashkey == $mickey){
-                                            $micCharactersCount[$mickey] = $miccharacter - $hashcharacter;
+                                    if(count($micCharactersCount) < count($hashCharactersCount)){
+                                        $occurenceCheckingFor = 'hash';
+                                        if($hashkey == $mickey && $miccharacter < 3){
+                                            $micCharactersCount[$mickey] = $hashcharacter - $miccharacter;
                                             // $micCharactersCount[$mickey]--;
+                                        }
+                                    }elseif(count($micCharactersCount) > count($hashCharactersCount)){
+                                        $occurenceCheckingFor = 'mic';
+                                        if($hashkey == $mickey && $miccharacter < 3){
+                                            $hashCharactersCount[$hashkey] = $miccharacter - $hashcharacter;
                                         }
                                     }
                                 }
                             }
-                        }else{
-                            $occurenceCheckingFor = 'hash';
-                            foreach($micCharactersCount as $mickey => $miccharacter){
-                                foreach($hashCharactersCount as $hashkey => $hashcharacter){
-                                    if($micCharactersCount[$mickey]){
-                                        if($hashkey == $mickey){
-                                            $hashCharactersCount[$hashkey] = $hashcharacter-$miccharacter;
-                                            // $micCharactersCount[$mickey]--;
-                                        }
-                                    }
+
+                            //find the occurences after comparing with hash value
+                            $finalOccurance = 0;
+                            if($occurenceCheckingFor == 'hash'){
+                                foreach($micCharactersCount as $micSoundCalculate){
+                                    $finalOccurance += $micSoundCalculate;
+                                }
+                            }else{
+                                foreach($hashCharactersCount as $hashSoundCalculate){
+                                    $finalOccurance += $hashSoundCalculate;
                                 }
                             }
-                        }
 
-                        //find the occurences after comparing with hash value
-                        $finalOccurance = 0;
-                        if($occurenceCheckingFor == 'mic'){
-                            foreach($micCharactersCount as $micSoundCalculate){
-                                $finalOccurance += $micSoundCalculate;
+                            if($finalOccurance < 3 ){
+                                return true;
+                            }elseif ($finalOccurance > -3){
+                                return true;
                             }
-                        }else{
-                            foreach($hashCharactersCount as $hashSoundCalculate){
-                                $finalOccurance += $hashSoundCalculate;
-                            }
-                        }
-                        if($finalOccurance < 2 && $finalOccurance > -2){
-                            return true;
                         }
                     }
-                }
             }
         }
-        return false;
+      return false;
     }
 }
 

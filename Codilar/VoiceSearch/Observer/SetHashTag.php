@@ -132,27 +132,29 @@ class SetHashTag implements ObserverInterface
         $wordsArray = [];
         // datamuse api json request
         $request = $this->ioFile->read('https://api.datamuse.com/words?ml=' . $word . '&max=' . self::RELATED_WORDS_QUANTITY);
-        $response = json_decode($request);
+        if($request) {
+            $response = json_decode($request);
 
-        // getting the words from array
-        $i = 0;
-        while ($i < count($response)) {
-            if ($response[$i]->word != "") {
-                $wordsArray[] = $response[$i]->word;
+            // getting the words from array
+            $i = 0;
+            while ($i < count($response)) {
+                if ($response[$i]->word != "") {
+                    $wordsArray[] = $response[$i]->word;
+                }
+                $i++;
             }
-            $i++;
         }
 
-        //getting only related words which contains category name
-        $relatedWords = array_filter($wordsArray, function ($text) use ($word) {
-            // Use stripos for case-insensitive search
-            return stripos($text, $word) !== false;
-        });
+            //getting only related words which contains category name
+            $relatedWords = array_filter($wordsArray, function ($text) use ($word) {
+                // Use stripos for case-insensitive search
+                return stripos($text, $word) !== false;
+            });
 
-        if (!$relatedWords) {
-            return array_slice($wordsArray, 0, 5, true);
-        }
-        return $relatedWords;
+            if (!$relatedWords) {
+                return array_slice($wordsArray, 0, 5, true);
+            }
+            return $relatedWords;
     }
 
     /**
