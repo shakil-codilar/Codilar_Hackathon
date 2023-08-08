@@ -1,0 +1,17 @@
+{
+  "name": "codilar/module-voicesearch",
+  "description": "Codilar Voice Search Module to do operations related to Product Searching",
+  "require": {
+    "php": "~8.1.0",
+    "magento/module-catalog-search": "102.0.6"
+  },
+  "type": "magento2-module",
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Codilar\\VoiceSearch\\": ""
+    }
+  }
+}
