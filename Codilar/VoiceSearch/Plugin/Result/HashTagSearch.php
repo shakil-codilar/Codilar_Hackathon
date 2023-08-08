@@ -16,6 +16,7 @@
  * then your use, modification, or distribution of it
  * requires the prior written permission from Codilar.
  ******************************************************************************/
+declare(strict_types=1);
 
 namespace Codilar\VoiceSearch\Plugin\Result;
 
@@ -25,7 +26,7 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Search\Model\QueryFactory;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface as ProductRepository;
-use Psr\Log\LoggerInterface as Logger;
+use Codilar\VoiceSearch\Logger\Logger;
 
 class HashTagSearch
 {
@@ -103,6 +104,7 @@ class HashTagSearch
                             }
                         }
                     }
+                    $this->logger->info('started to add products in search after getting no products with default search');
                     $queryString = implode('+', $queryWords);
                     $query->setQueryText($queryString);
                 }
@@ -234,7 +236,7 @@ class HashTagSearch
                                 $finalOccurance += $hashSoundCalculate;
                             }
                         }
-                        if($finalOccurance <2 && $finalOccurance >-2){
+                        if($finalOccurance < 2 && $finalOccurance > -2){
                             return true;
                         }
                     }

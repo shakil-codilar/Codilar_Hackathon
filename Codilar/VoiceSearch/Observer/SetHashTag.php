@@ -16,6 +16,7 @@
  * then your use, modification, or distribution of it
  * requires the prior written permission from Codilar.
  ******************************************************************************/
+declare(strict_types=1);
 
 namespace Codilar\VoiceSearch\Observer;
 
@@ -23,7 +24,7 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Psr\Log\LoggerInterface as Logger;
+use Codilar\VoiceSearch\Logger\Logger;
 use Magento\Framework\Filesystem\Io\File as IoFIle;
 
 class SetHashTag implements ObserverInterface
@@ -94,6 +95,7 @@ class SetHashTag implements ObserverInterface
 
                 $hasTagText = array_unique(array_merge($hashtagSepartedText, $hashtagCombinedText));
                 $hasTagString = implode(' ', $hasTagText);
+                $this->logger->info('Started Saving the hashtags related product words');
                 $product->setHashTagAttribute($hasTagString);
             }
             return $this;

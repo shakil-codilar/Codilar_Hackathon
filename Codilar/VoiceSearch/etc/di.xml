@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/*******************************************************************************
+ * Codilar Hackathon 2023
+ * Team Innovation Squad
+ *
+ * Copyright 2023 Codilar
+ * All Rights Reserved.
+ *
+ * NOTICE: All information contained herein is, and remains
+ * the property of Codilar and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Codilar
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Codilar permits you to use and modify this file with few restriction
+ * If you have received this file from a source other than Codilar,
+ * then your use, modification, or distribution of it
+ * requires the prior written permission from Codilar.
+ ******************************************************************************/
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <type name="Codilar\VoiceSearch\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">CodilarVoiceSearchLogger</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Codilar\VoiceSearch\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
